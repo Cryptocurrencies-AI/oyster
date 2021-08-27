@@ -1,6 +1,11 @@
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
-import { ASSET_CHAIN } from '../constants';
+// import { ASSET_CHAIN } from '../constants';
+
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
 
 export interface ProgressUpdate {
   message: string;

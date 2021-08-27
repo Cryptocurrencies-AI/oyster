@@ -13,7 +13,7 @@ import {
   TRANSFER_ASSETS_OUT_INSTRUCTION,
   WORMHOLE_PROGRAM_ID,
 } from '../utils/ids';
-import { ASSET_CHAIN } from '../utils/assets';
+// import { ASSET_CHAIN } from '../utils/assets';
 import { useEthereum } from '../contexts';
 import {
   AccountInfo,
@@ -43,6 +43,11 @@ import { ethers } from 'ethers';
 import { useBridge } from '../contexts/bridge';
 import BN from 'bn.js';
 import { keccak256 } from 'ethers/utils';
+
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
 
 type WrappedTransferMeta = {
   chain: number;

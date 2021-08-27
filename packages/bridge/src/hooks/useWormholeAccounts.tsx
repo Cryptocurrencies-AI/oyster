@@ -11,7 +11,7 @@ import {
   fromLamports,
 } from '@oyster/common';
 import { WORMHOLE_PROGRAM_ID } from '../utils/ids';
-import { ASSET_CHAIN } from '../utils/assets';
+// import { ASSET_CHAIN } from '../utils/assets';
 import { useEthereum } from '../contexts';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { models } from '@oyster/common';
@@ -28,6 +28,11 @@ import {
   COINGECKO_POOL_INTERVAL,
   useCoingecko,
 } from '../contexts/coingecko';
+
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
 
 type WrappedAssetMeta = {
   chain: number;
@@ -157,7 +162,7 @@ const queryWrappedMetaAccounts = async (
     if (asset.mint) {
       asset.amount =
         parseInt(asset.mint?.info.supply.toString()) /
-          Math.pow(10, asset.mint?.info.decimals || 0);
+        Math.pow(10, asset.mint?.info.decimals || 0);
       if (!asset.mint) {
         throw new Error('missing mint');
       }

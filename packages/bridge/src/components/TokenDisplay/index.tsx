@@ -3,9 +3,14 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { debug } from 'console';
 import React from 'react';
 import { useEthereum } from '../../contexts';
-import { ASSET_CHAIN } from '../../utils/assets';
+// import { ASSET_CHAIN } from '../../utils/assets';
 import './style.less';
 import { TokenChain } from './tokenChain';
+
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
 
 export const TokenDisplay = ({
   asset,

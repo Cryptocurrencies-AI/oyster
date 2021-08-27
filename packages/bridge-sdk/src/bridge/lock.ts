@@ -11,7 +11,12 @@ import BN from 'bn.js';
 import * as BufferLayout from 'buffer-layout';
 import { padBuffer } from './helpers';
 import { AssetMeta } from './meta';
-import { ASSET_CHAIN } from './constants';
+// import { ASSET_CHAIN } from './constants';
+
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
 
 export const createLockAssetInstruction = async (
   authorityKey: PublicKey,

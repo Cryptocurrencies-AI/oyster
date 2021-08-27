@@ -17,7 +17,7 @@ import {
   TokenAccount,
 } from '@oyster/common';
 import { useWormholeTransactions } from '../../hooks/useWormholeTransactions';
-import { ASSET_CHAIN } from '../../utils/assets';
+// import { ASSET_CHAIN } from '../../utils/assets';
 import { TokenChain } from '../TokenDisplay/tokenChain';
 import bs58 from 'bs58';
 import { SyncOutlined } from '@ant-design/icons';
@@ -29,6 +29,11 @@ import { useBridge } from '../../contexts/bridge';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
+
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
 
 export const RecentTransactionsTable = (props: {
   showUserTransactions?: boolean;

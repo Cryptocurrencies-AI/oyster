@@ -1,5 +1,10 @@
 import React from 'react';
-import { ASSET_CHAIN } from '../../utils/assets';
+// import { ASSET_CHAIN } from '../../utils/assets';
+
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
 
 export const TokenChain = (props: {
   chain?: ASSET_CHAIN;
