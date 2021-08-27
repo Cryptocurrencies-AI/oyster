@@ -7,7 +7,7 @@ section.ant-layout {
 }
 
 .get-started {
-  background: url("/home/get-started.svg") center  center no-repeat;
+  background: url('/home/get-started.svg') center center no-repeat;
   background-size: 100%;
   cursor: pointer;
   width: 224px;
@@ -15,7 +15,7 @@ section.ant-layout {
   display: inline-block;
 }
 .down-arrow {
-  background: url("/home/icons/down-arrow.svg") center  center no-repeat;
+  background: url('/home/icons/down-arrow.svg') center center no-repeat;
   background-size: 150%;
   cursor: pointer;
   display: inline-block;
@@ -24,7 +24,12 @@ section.ant-layout {
 }
 .logo-title {
   /* SOLANA <-> ETHEREUM BRIDGE */
-  background: linear-gradient(90deg, #DC1FFF 11.29%, #4DA9FF 51.42%, #00CC82 93.23%);
+  background: linear-gradient(
+    90deg,
+    #dc1fff 11.29%,
+    #4da9ff 51.42%,
+    #00cc82 93.23%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 16px;
@@ -88,7 +93,7 @@ section.ant-layout {
     margin: auto;
     padding-bottom: 70px;
     .description-text {
-      color: @tungsten-60
+      color: @tungsten-60;
     }
     .ant-table-pagination.ant-pagination {
       margin: 16px 100px;
@@ -140,7 +145,7 @@ section.ant-layout {
 }
 
 footer.ant-layout-footer {
-  padding: 30px 0;
+  // padding: 30px 0;
   background-image: url('/home/footer.svg');
   background-size: 100% auto;
   background-repeat: no-repeat;
@@ -153,7 +158,6 @@ footer.ant-layout-footer {
   background-size: 100% auto;
   background-repeat: no-repeat;
 }
-
 
 @media screen and (max-width: 900px) {
   .justify-bottom-container {
@@ -170,7 +174,6 @@ footer.ant-layout-footer {
     }
   }
 }
-
 
 @media screen and (max-width: 1200px) {
   .home-container {

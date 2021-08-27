@@ -42,24 +42,29 @@ export const AppBar = (props: { isRoot?: boolean }) => {
       </span>
       <div className={`app-bar-inner ${showMobileMenu ? 'mobile-active' : ''}`}>
         {!props.isRoot && (
-          <div className={`app-bar-item logo root-mobile`}>
+          <div
+            style={{ padding: '0' }}
+            className={`app-bar-item logo root-mobile`}
+          >
             <Link to="/">
               <img alt="logo-bar" src={'/appbar/logo.svg'} />
             </Link>
           </div>
         )}
-        <div className={`app-bar-item ${isActiveClass('move')}`}>
+        {/* <div className={`app-bar-item ${isActiveClass('move')}`}>
           <Link to="/move">Bridge</Link>
-        </div>
+        </div> */}
         {/*<div className={`app-bar-item ${isActiveClass('faq')}`}>*/}
         {/*  <Link to="/faq">FAQ</Link>*/}
         {/*</div>*/}
-        <div className={`app-bar-item ${isActiveClass('proof-of-assets')}`}>
+        {/* <div className={`app-bar-item ${isActiveClass('proof-of-assets')}`}>
           <Link to="/proof-of-assets">Proof-of-Assets</Link>
-        </div>
-        <div className={`app-bar-item ${isActiveClass('help')}`}>
+        </div> */}
+        {/* <div className={`app-bar-item ${isActiveClass('help')}`}>
           <Link to="/help">Help</Link>
-        </div>
+        </div> */}
+
+        <a className="guide-link">Guide</a>
         {!props.isRoot && (
           <Popover
             placement="topRight"
@@ -72,7 +77,13 @@ export const AppBar = (props: { isRoot?: boolean }) => {
               shape="circle"
               size="large"
               type="text"
-              icon={<SettingOutlined />}
+              icon={
+                <SettingOutlined
+                  style={{
+                    color: '#fff',
+                  }}
+                />
+              }
             />
           </Popover>
         )}

@@ -41,7 +41,7 @@ export const ConnectButton = (props: ConnectButtonProps) => {
       disabled={connected && disabled}
       overlay={menu}
     >
-      Connect
+      Connect Wallet
     </Dropdown.Button>
   );
 };

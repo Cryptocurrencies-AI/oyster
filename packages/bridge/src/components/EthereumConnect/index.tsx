@@ -52,11 +52,11 @@ export const EthereumConnect = () => {
           onClick={() => onConnectEthereum && onConnectEthereum()}
           overlay={menu}
         >
-          CONNECT
+          Connect Wallet
         </Dropdown.Button>
       ) : (
         <Button onClick={() => onConnectEthereum && onConnectEthereum()}>
-          CONNECT
+          Connect Wallet
         </Button>
       )}
     </div>

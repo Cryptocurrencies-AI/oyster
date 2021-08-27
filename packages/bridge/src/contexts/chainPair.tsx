@@ -31,7 +31,11 @@ import {
 import { useBridge } from './bridge';
 import { PublicKey } from '@solana/web3.js';
 import { ethers } from 'ethers';
-import { deriveERC20Address } from '../utils/helpers';
+import {
+  deriveERC20Address,
+  tokenAddress,
+  tokenSymbol,
+} from '../utils/helpers';
 
 export interface TokenChainContextState {
   info?: TransferRequestInfo;
@@ -51,9 +55,8 @@ export interface TokenChainPairContextState {
   setLastTypedAccount: (chain: ASSET_CHAIN) => void;
 }
 
-const TokenChainPairContext = React.createContext<TokenChainPairContextState | null>(
-  null,
-);
+const TokenChainPairContext =
+  React.createContext<TokenChainPairContextState | null>(null);
 
 const isValidAddress = (address: string) => {
   try {

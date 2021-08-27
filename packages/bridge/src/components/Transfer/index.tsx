@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { notification, Spin, Button, Popover } from 'antd';
-import {contexts, useUserAccounts} from '@oyster/common';
+import { contexts, useUserAccounts } from '@oyster/common';
 import { Input } from '../Input';
 
 import './style.less';
@@ -47,15 +47,10 @@ export const Transfer = () => {
   const { provider, tokenMap } = useEthereum();
   const { userAccounts } = useUserAccounts();
   const hasCorrespondingNetworks = useCorrectNetwork();
-  const {
-    A,
-    B,
-    mintAddress,
-    setMintAddress,
-    setLastTypedAccount,
-  } = useTokenChainPairState();
+  const { A, B, mintAddress, setMintAddress, setLastTypedAccount } =
+    useTokenChainPairState();
 
-  const [popoverVisible, setPopoverVisible] = useState(true)
+  const [popoverVisible, setPopoverVisible] = useState(true);
 
   const [request, setRequest] = useState<TransferRequest>({
     from: ASSET_CHAIN.Ethereum,
@@ -115,17 +110,30 @@ export const Transfer = () => {
           }}
           className={'left'}
         />
-        <Popover
+        {/* <Popover
           placement="top"
-          title={<span style={{cursor: "pointer"}} onClick={() => setPopoverVisible(false)}>x</span>}
-          content={<span style={{textAlign: "center"}}>
-            <WarningOutlined style={{ fontSize: '40px', color: '#ccae00' }} />
-            <p>Wormhole is upgrading on-chain contracts to v2 in next 2 weeks.
-              <br/>If possible please wait with moving funds, otherwise please plan for migration soon.</p>
-          </span>}
+          title={
+            <span
+              style={{ cursor: 'pointer' }}
+              onClick={() => setPopoverVisible(false)}
+            >
+              x
+            </span>
+          }
+          content={
+            <span style={{ textAlign: 'center' }}>
+              <WarningOutlined style={{ fontSize: '40px', color: '#ccae00' }} />
+              <p>
+                Wormhole is upgrading on-chain contracts to v2 in next 2 weeks.
+                <br />
+                If possible please wait with moving funds, otherwise please plan
+                for migration soon.
+              </p>
+            </span>
+          }
           visible={popoverVisible}
-        >
-          {/* <Button
+        > */}
+        {/* <Button
             className="swap-button"
             style={{ padding: 0 }}
             disabled={false}
@@ -140,7 +148,152 @@ export const Transfer = () => {
           >
             <span></span>
           </Button> */}
-        </Popover>
+        {/* </Popover> */}
+        <Button
+          className={'transfer-button'}
+          type="primary"
+          size="large"
+          disabled={!(A.amount && B.amount) || !connected || !provider}
+          onClick={async () => {
+            if (!wallet || !provider) {
+              return;
+            }
+
+            const token = tokenMap.get(request.asset?.toLowerCase() || '');
+            const NotificationContent = () => {
+              const [activeSteps, setActiveSteps] = useState<ProgressUpdate[]>(
+                [],
+              );
+              useEffect(() => {
+                (async () => {
+                  let steps: ProgressUpdate[] = [];
+                  try {
+                    if (request.from === ASSET_CHAIN.Solana) {
+                      await fromSolana(
+                        connection,
+                        wallet,
+                        request,
+                        provider,
+                        update => {
+                          if (update.replace) {
+                            steps.pop();
+                            steps = [...steps, update];
+                          } else {
+                            steps = [...steps, update];
+                          }
+
+                          setActiveSteps(steps);
+                        },
+                        bridge,
+                      );
+                    }
+
+                    if (request.to === ASSET_CHAIN.Solana) {
+                      await toSolana(
+                        connection,
+                        wallet,
+                        request,
+                        provider,
+                        update => {
+                          if (update.replace) {
+                            steps.pop();
+                            steps = [...steps, update];
+                          } else {
+                            steps = [...steps, update];
+                          }
+
+                          setActiveSteps(steps);
+                        },
+                      );
+                    }
+                  } catch (err) {
+                    // TODO...
+                    console.log(err);
+                  }
+                })();
+              }, [setActiveSteps]);
+
+              return (
+                <div>
+                  <div style={{ display: 'flex' }}>
+                    <div>
+                      <h5>{`${chainToName(
+                        request.from,
+                      )} Mainnet -> ${chainToName(request.to)} Mainnet`}</h5>
+                      <h2>
+                        {request.amount?.toString()} {request.info?.name}
+                      </h2>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        marginLeft: 'auto',
+                        marginRight: 10,
+                      }}
+                    >
+                      <TokenDisplay
+                        asset={request.asset}
+                        chain={request.from}
+                        token={token}
+                      />
+                      <span style={{ margin: 15 }}>{'➔'}</span>
+                      <TokenDisplay
+                        asset={request.asset}
+                        chain={request.to}
+                        token={token}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      textAlign: 'left',
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    {(() => {
+                      let group = '';
+                      return activeSteps.map((step, i) => {
+                        let prevGroup = group;
+                        group = step.group;
+                        let newGroup = prevGroup !== group;
+                        return (
+                          <>
+                            {newGroup && <span>{group}</span>}
+                            <span style={{ marginLeft: 15 }}>
+                              {typeToIcon(
+                                step.type,
+                                activeSteps.length - 1 === i,
+                              )}{' '}
+                              {step.message}
+                            </span>
+                          </>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              );
+            };
+
+            notification.open({
+              message: '',
+              duration: 0,
+              placement: 'bottomLeft',
+              description: <NotificationContent />,
+              className: 'custom-class',
+              style: {
+                width: 500,
+              },
+            });
+          }}
+        >
+          {hasCorrespondingNetworks
+            ? !(A.amount && B.amount)
+              ? LABELS.ENTER_AMOUNT
+              : LABELS.TRANSFER
+            : LABELS.SET_CORRECT_WALLET_NETWORK}
+        </Button>
         <Input
           title={`To`}
           asset={request.asset}
@@ -163,151 +316,6 @@ export const Transfer = () => {
         />
       </div>
 
-      <Button
-        className={'transfer-button'}
-        type="primary"
-        size="large"
-        disabled={!(A.amount && B.amount) || !connected || !provider}
-        onClick={async () => {
-          if (!wallet || !provider) {
-            return;
-          }
-
-          const token = tokenMap.get(request.asset?.toLowerCase() || '');
-          const NotificationContent = () => {
-            const [activeSteps, setActiveSteps] = useState<ProgressUpdate[]>(
-              [],
-            );
-            useEffect(() => {
-              (async () => {
-                let steps: ProgressUpdate[] = [];
-                try {
-                  if (request.from === ASSET_CHAIN.Solana) {
-                    await fromSolana(
-                      connection,
-                      wallet,
-                      request,
-                      provider,
-                      update => {
-                        if (update.replace) {
-                          steps.pop();
-                          steps = [...steps, update];
-                        } else {
-                          steps = [...steps, update];
-                        }
-
-                        setActiveSteps(steps);
-                      },
-                      bridge,
-                    );
-                  }
-
-                  if (request.to === ASSET_CHAIN.Solana) {
-                    await toSolana(
-                      connection,
-                      wallet,
-                      request,
-                      provider,
-                      update => {
-                        if (update.replace) {
-                          steps.pop();
-                          steps = [...steps, update];
-                        } else {
-                          steps = [...steps, update];
-                        }
-
-                        setActiveSteps(steps);
-                      },
-                    );
-                  }
-                } catch (err) {
-                  // TODO...
-                  console.log(err);
-                }
-              })();
-            }, [setActiveSteps]);
-
-            return (
-              <div>
-                <div style={{ display: 'flex' }}>
-                  <div>
-                    <h5>{`${chainToName(request.from)} Mainnet -> ${chainToName(
-                      request.to,
-                    )} Mainnet`}</h5>
-                    <h2>
-                      {request.amount?.toString()} {request.info?.name}
-                    </h2>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      marginLeft: 'auto',
-                      marginRight: 10,
-                    }}
-                  >
-                    <TokenDisplay
-                      asset={request.asset}
-                      chain={request.from}
-                      token={token}
-                    />
-                    <span style={{ margin: 15 }}>{'➔'}</span>
-                    <TokenDisplay
-                      asset={request.asset}
-                      chain={request.to}
-                      token={token}
-                    />
-                  </div>
-                </div>
-                <div
-                  style={{
-                    textAlign: 'left',
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
-                >
-                  {(() => {
-                    let group = '';
-                    return activeSteps.map((step, i) => {
-                      let prevGroup = group;
-                      group = step.group;
-                      let newGroup = prevGroup !== group;
-                      return (
-                        <>
-                          {newGroup && <span>{group}</span>}
-                          <span style={{ marginLeft: 15 }}>
-                            {typeToIcon(
-                              step.type,
-                              activeSteps.length - 1 === i,
-                            )}{' '}
-                            {step.message}
-                          </span>
-                        </>
-                      );
-                    });
-                  })()}
-                </div>
-              </div>
-            );
-          };
-
-          notification.open({
-            message: '',
-            duration: 0,
-            placement: 'bottomLeft',
-            description: <NotificationContent />,
-            className: 'custom-class',
-            style: {
-              width: 500,
-            },
-          });
-        }}
-      >
-        {hasCorrespondingNetworks
-          ? !(A.amount && B.amount)
-            ? LABELS.ENTER_AMOUNT
-            : LABELS.TRANSFER
-          : LABELS.SET_CORRECT_WALLET_NETWORK}
-      </Button>
       {/* <RecentTransactionsTable tokenAccounts={tokenAccounts} /> */}
     </>
   );
