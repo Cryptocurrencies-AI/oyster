@@ -4,7 +4,7 @@ import { contexts, useUserAccounts } from '@oyster/common';
 import { Input } from '../Input';
 
 import './style.less';
-import { ASSET_CHAIN, chainToName } from '../../utils/assets';
+import { chainToName } from '../../utils/assets';
 import {
   displayBalance,
   fromSolana,
@@ -40,6 +40,11 @@ export const typeToIcon = (type: string, isLast: boolean) => {
   }
 };
 
+export enum ASSET_CHAIN {
+  Solana = 1,
+  Ethereum = 2,
+}
+
 export const Transfer = () => {
   const connection = useConnection();
   const bridge = useBridge();
@@ -47,8 +52,13 @@ export const Transfer = () => {
   const { provider, tokenMap } = useEthereum();
   const { userAccounts } = useUserAccounts();
   const hasCorrespondingNetworks = useCorrectNetwork();
-  const { A, B, mintAddress, setMintAddress, setLastTypedAccount } =
-    useTokenChainPairState();
+  const {
+    A,
+    B,
+    mintAddress,
+    setMintAddress,
+    setLastTypedAccount,
+  } = useTokenChainPairState();
 
   const [popoverVisible, setPopoverVisible] = useState(true);
 
